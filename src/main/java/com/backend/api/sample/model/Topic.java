@@ -24,16 +24,4 @@ public class Topic {
 
     public Topic() {
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
 }
