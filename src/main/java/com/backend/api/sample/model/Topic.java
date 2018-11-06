@@ -13,13 +13,20 @@ public class Topic {
     private long id;
     @JsonProperty("name")
     private String name;
+    @JsonProperty("description")
+    private String description;
+
+    public Topic(long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
     public Topic() {
     }
 
-    public Topic(long id, String name) {
-        this.id = id;
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
     public long getId() {
