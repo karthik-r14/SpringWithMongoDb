@@ -19,7 +19,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,7 +37,7 @@ public class TopicControllerTest {
     @Before
     public void setUp() throws Exception {
         mockMvc = standaloneSetup(topicController)
-                .build();
+            .build();
     }
 
     @Test
@@ -49,10 +51,10 @@ public class TopicControllerTest {
         when(topicService.getAllTopics()).thenReturn(topics);
 
         mockMvc.perform(get("/topics/"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().json(new Gson().toJson(topics)))
-                .andExpect(jsonPath("$.*", Matchers.hasSize(2)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(content().json(new Gson().toJson(topics)))
+            .andExpect(jsonPath("$.*", Matchers.hasSize(2)));
 
         verify(topicService).getAllTopics();
     }
@@ -65,10 +67,10 @@ public class TopicControllerTest {
         when(topicService.getTopicById(id)).thenReturn(topic);
 
         mockMvc.perform(get("/topics/" + id))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(content().json(new Gson().toJson(topic)))
-                .andExpect(jsonPath("$.*", Matchers.hasSize(3)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(content().json(new Gson().toJson(topic)))
+            .andExpect(jsonPath("$.*", Matchers.hasSize(3)));
 
         verify(topicService).getTopicById(id);
     }
@@ -82,10 +84,19 @@ public class TopicControllerTest {
 //        doNothing().when(topicService).createNewTopic(topic);
 
         mockMvc.perform(post("/topics/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBodyJson))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBodyJson))
+            .andExpect(status().isOk());
 
 //        verify(topicService).createNewTopic(topic);
+    }
+
+    @Test
+    public void shouldReturnCsvWhenDownloadEndpointIsInvoked() throws Exception {
+        mockMvc.perform(get("/topics/download"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("text/csv"));
+
+        verify(topicService).getAllTopics();
     }
 }
